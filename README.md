@@ -17,7 +17,7 @@ Navigate to the folder ExpMax Code and then execute the below code on terminal (
 - python Wine_ExpMax.py
 - python Iris_ExpMax.py 
 
-# Approach Taken
+# Algorithm
 
 - First the data are read into a dataframe and a histogram is plotted for each feature column mentioned by the user from the list. From this we determined that optimal clusters based on likelihood that would be the best for our GMM.
 - the inital parameters are chosen randomly, then the new parameters(mean, variance, and pi) are calculated via ri(the probability of the datapoint that it belongs to a cluster class)
