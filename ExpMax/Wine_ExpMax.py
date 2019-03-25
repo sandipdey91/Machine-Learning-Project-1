@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 import random as rnd
 
-class GMM:
+class gmmExpMax:
     def __init__(self,X,iterations):
         self.iterations = iterations
         self.X = X
@@ -13,7 +13,7 @@ class GMM:
         self.pi = None
         self.var = None
 
-    def run(self):
+    def expmax(self):
 
         # initiate initial random guesses for mean, variance, and probability
         self.mu = [rnd.uniform(self.X.min(), self.X.max()), rnd.uniform(self.X.min(), self.X.max())]
@@ -119,8 +119,8 @@ def main():
         iterations = 2
         x = np.array(dataArr)
         xrav = x.ravel()
-        myGMM = GMM(xrav, iterations)
-        mu, sigma = myGMM.run()
+        gmm = gmmExpMax(xrav, iterations)
+        mu, sigma = gmm.expmax()
 
         x = np.linspace(x.min(), x.max(), 1599, endpoint=False)
         ycomb = np.zeros_like(x)
