@@ -52,24 +52,36 @@ class GMM:
 
         return self.mu, self.var
 
-def FindOptimalClusters(dataArr):
+def initialcluster(datanp):
     optCluster = 0
     for cluster in range(2,10):
         logs=[]
-        print('Checking feasibility of Cluster:' + str(cluster))
-        data= np.empty(len(dataArr))
-        np.copyto(data,dataArr)
+        #checking cluster feasibility   
+        data= np.empty(len(datanp))
+        np.copyto(data,datanp)
         stat = Stat()
         stat.SetInitialValues(cluster,data)
         for x in range(10):
             rValue = EStep(data,cluster,stat)
             stat = MStep(data,cluster,stat,rValue)
-            logLikely = LogLikelyHood(data,stat)
+            logLikely = likelyhood(data,stat)
             logs.append(logLikely)
         if all(x<y for x, y in zip(logs, logs[1:])):
             optCluster = cluster
             break
     return optCluster
+
+
+def likelyhood(data,Stat: Stat):
+    logLik = 0
+    for x in range(len(Stat.mean)):
+        varS = Stat.variance[x] * Stat.variance[x]
+        term1 = ((len(data)) * math.log(2 * math.pi))/(-1*2)
+        term2 = ((len(data)) * math.log(varS))/(-1*2)
+        term3 = np.sum((np.power(np.subtract(data,Stat.mean[x]),2))/(-1*2*varS),axis=0)
+        logLik += term1+term2+term3
+    return logLik
+
 
 def main():
     data = pd.read_csv('data/winequality-red.csv')
@@ -103,15 +115,12 @@ def main():
         plt.show()
 
         # Fit Gaussian Mixture model to feature
-        clusters = 2 
+        clusters = initialcluster(dataArr) #2 
         iterations = 2
         x = np.array(dataArr)
         xrav = x.ravel()
         myGMM = GMM(xrav, iterations)
         mu, sigma = myGMM.run()
-
-        # Create histogram for feature
-        # plt.hist(x, density=True)
 
         x = np.linspace(x.min(), x.max(), 1599, endpoint=False)
         ycomb = np.zeros_like(x)
